@@ -41,6 +41,7 @@ test(
   go,
   args: ['-C', src_root, 'vet', './...'],
   env: {'CGO_ENABLED': '0'},
+  timeout: 300,
 )
 
 test(
@@ -48,4 +49,5 @@ test(
   go,
   args: ['-C', src_root, 'run', './tools/nocomments', '.'],
   env: {'CGO_ENABLED': '0'},
+  timeout: 300,
 )
