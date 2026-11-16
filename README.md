@@ -18,6 +18,21 @@
 > lexicon is **not** an agent harness. It has no tools, file access or command execution:
 > it is a simple chat for quick questions and lookups from your terminal.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="assets/screenshots/dark.png" alt="lexicon on a dark terminal theme"></td>
+    <td width="50%"><img src="assets/screenshots/blue.png" alt="lexicon on a blue terminal theme"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Dark theme</sub></td>
+    <td align="center"><sub>Blue theme</sub></td>
+  </tr>
+</table>
+
+lexicon follows your terminal palette, so it adapts to whatever theme you use.
+
 ## Features
 
 - Chat TUI built on [Bubble Tea](https://github.com/charmbracelet/bubbletea)
