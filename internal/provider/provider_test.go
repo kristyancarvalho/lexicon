@@ -99,3 +99,32 @@ func TestChatAPIErrorObject(t *testing.T) {
 }
 
 func TestChatAPIErrorString(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadGateway)
+		_, _ = w.Write([]byte(`{"error":"upstream down"}`))
+	}))
+	defer server.Close()
+
+	c := newCompat(Info{Endpoint: server.URL}, "t", server.Client())
+	_, err := c.Chat(context.Background(), "m", nil)
+
+	var apiErr *APIError
+	if !errors.As(err, &apiErr) {
+		t.Fatalf("expected APIError, got %v", err)
+	}
+	if apiErr.Status != http.StatusBadGateway || apiErr.Message != "upstream down" {
+		t.Fatalf("unexpected error: %+v", apiErr)
+	}
+}
+
+func TestChatEmptyChoices(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte(`{"choices":[]}`))
+	}))
+	defer server.Close()
+
+	c := newCompat(Info{Endpoint: server.URL}, "t", server.Client())
+	if _, err := c.Chat(context.Background(), "m", nil); !errors.Is(err, ErrEmptyResponse) {
+		t.Fatalf("expected ErrEmptyResponse, got %v", err)
+	}
+}
