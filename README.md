@@ -26,8 +26,8 @@
     <td width="50%"><img src="assets/screenshots/blue.png" alt="lexicon on a blue terminal theme"></td>
   </tr>
   <tr>
-    <td align="center"><sub>Dark theme</sub></td>
-    <td align="center"><sub>Blue theme</sub></td>
+    <td align="center"><sub>Dark theme (System)</sub></td>
+    <td align="center"><sub>Blue theme (System)</sub></td>
   </tr>
 </table>
 
