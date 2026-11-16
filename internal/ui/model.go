@@ -37,12 +37,12 @@ type Model struct {
 
 func New(cfg *config.Config, cfgPath string) Model {
 	input := textinput.New()
-	input.Placeholder = "Escreva uma mensagem"
+	input.Placeholder = "Write a message"
 	input.Prompt = "› "
 	input.Focus()
 
 	token := textinput.New()
-	token.Placeholder = "cole o token aqui"
+	token.Placeholder = "paste your token here"
 	token.Prompt = "› "
 	token.EchoMode = textinput.EchoPassword
 	token.EchoCharacter = '•'
@@ -143,7 +143,7 @@ func (m Model) updateToken(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m Model) saveToken() (tea.Model, tea.Cmd) {
 	value := strings.TrimSpace(m.token.Value())
 	if value == "" {
-		m.notice = "token vazio"
+		m.notice = "token is empty"
 		return m, nil
 	}
 	m.cfg.SetToken(m.active().ID, value)

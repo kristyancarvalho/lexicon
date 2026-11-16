@@ -12,13 +12,13 @@ type hint struct{ key, label string }
 
 var (
 	chatHints = []hint{
-		{"enter", "enviar"}, {"ctrl+k", "token"}, {"ctrl+p", "provider"},
-		{"ctrl+l", "limpar"}, {"pgup/pgdn", "rolar"}, {"ctrl+c", "sair"},
+		{"enter", "send"}, {"ctrl+k", "token"}, {"ctrl+p", "provider"},
+		{"ctrl+l", "clear"}, {"pgup/pgdn", "scroll"}, {"ctrl+c", "quit"},
 	}
-	tokenHints = []hint{{"enter", "salvar"}, {"tab", "trocar provider"}, {"esc", "cancelar"}}
+	tokenHints = []hint{{"enter", "save"}, {"tab", "switch provider"}, {"esc", "cancel"}}
 )
 
-const welcome = "Bem-vindo ao lexicon. Pressione ctrl+k para configurar o token do provider."
+const welcome = "Welcome to lexicon. Press ctrl+k to set your provider token."
 
 func renderHints(hints []hint) string {
 	parts := make([]string, len(hints))
@@ -66,7 +66,7 @@ func (m Model) statusLine() string {
 	case m.notice != "":
 		return errorStyle.Render("✗ " + m.notice)
 	case m.pending:
-		return mutedStyle.Render("… aguardando resposta")
+		return mutedStyle.Render("… waiting for reply")
 	}
 	return " "
 }
@@ -79,7 +79,7 @@ func (m Model) renderHistory() string {
 	width := max(m.width-4, 10)
 	var b strings.Builder
 	for _, msg := range m.history {
-		label, bar := userStyle.Render("você"), userBarStyle
+		label, bar := userStyle.Render("you"), userBarStyle
 		if msg.Role == provider.RoleAssistant {
 			label, bar = assistantStyle.Render("lexicon"), botBarStyle
 		}
