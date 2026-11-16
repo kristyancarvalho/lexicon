@@ -130,3 +130,99 @@ func (m Model) updateToken(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case "tab":
 		m.cycleProvider()
+		return m, nil
+	case "enter":
+		return m.saveToken()
+	}
+
+	var cmd tea.Cmd
+	m.token, cmd = m.token.Update(msg)
+	return m, cmd
+}
+
+func (m Model) saveToken() (tea.Model, tea.Cmd) {
+	value := strings.TrimSpace(m.token.Value())
+	if value == "" {
+		m.notice = "token vazio"
+		return m, nil
+	}
+	m.cfg.SetToken(m.active().ID, value)
+	if err := m.cfg.Save(m.cfgPath); err != nil {
+		m.notice = err.Error()
+		return m, nil
+	}
+	m.closeToken()
+	return m, nil
+}
+
+func (m Model) submit() (tea.Model, tea.Cmd) {
+	text := strings.TrimSpace(m.input.Value())
+	if text == "" || m.pending {
+		return m, nil
+	}
+
+	info := m.active()
+	p, err := provider.New(info.ID, m.cfg.Token(info.ID))
+	if err != nil {
+		m.notice = err.Error()
+		return m, nil
+	}
+
+	m.history = append(m.history, provider.Message{Role: provider.RoleUser, Content: text})
+	m.input.Reset()
+	m.notice = ""
+	m.pending = true
+	m.refresh()
+	return m, sendCmd(p, m.cfg.Model(info.ID, info.DefaultModel), m.history)
+}
+
+func (m Model) active() provider.Info {
+	if info, ok := provider.Lookup(m.cfg.Active); ok {
+		return info
+	}
+	return m.providers[0]
+}
+
+func (m *Model) cycleProvider() {
+	current := m.active().ID
+	next := m.providers[0]
+	for i, info := range m.providers {
+		if info.ID == current {
+			next = m.providers[(i+1)%len(m.providers)]
+			break
+		}
+	}
+	m.cfg.Active = next.ID
+	if err := m.cfg.Save(m.cfgPath); err != nil {
+		m.notice = err.Error()
+	}
+}
+
+func (m *Model) openToken() {
+	m.mode = modeToken
+	m.notice = ""
+	m.token.Reset()
+	m.input.Blur()
+	m.token.Focus()
+}
+
+func (m *Model) closeToken() {
+	m.mode = modeChat
+	m.notice = ""
+	m.token.Reset()
+	m.token.Blur()
+	m.input.Focus()
+}
+
+func (m *Model) layout() {
+	m.viewport.Width = m.width
+	m.viewport.Height = max(m.height-chromeHeight, 1)
+	m.input.Width = max(m.width-4, 10)
+	m.token.Width = 40
+	m.refresh()
+}
+
+func (m *Model) refresh() {
+	m.viewport.SetContent(m.renderHistory())
+	m.viewport.GotoBottom()
+}
