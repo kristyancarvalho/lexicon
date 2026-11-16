@@ -18,7 +18,7 @@ const (
 	modeToken
 )
 
-const chromeHeight = 4
+const chromeHeight = 6
 
 type Model struct {
 	cfg       *config.Config
