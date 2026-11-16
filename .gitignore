@@ -1,1 +1,4 @@
 specs/
+/build/
+/lexicon
+*.test
