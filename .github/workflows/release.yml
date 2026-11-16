@@ -1,0 +1,39 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  github:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: softprops/action-gh-release@v3
+        with:
+          generate_release_notes: true
+
+  aur:
+    needs: github
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set package version
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          sed -i "s/^pkgver=.*/pkgver=${version}/; s/^pkgrel=.*/pkgrel=1/" packaging/aur/PKGBUILD
+
+      - name: Publish to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v4.2.0
+        with:
+          pkgname: lexicon
+          pkgbuild: packaging/aur/PKGBUILD
+          updpkgsums: true
+          commit_username: ${{ github.repository_owner }}
+          commit_email: ${{ github.repository_owner }}@users.noreply.github.com
+          commit_message: "Update to ${{ github.ref_name }}"
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
