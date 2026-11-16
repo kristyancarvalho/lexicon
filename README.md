@@ -14,6 +14,10 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/kristyancarvalho/lexicon?style=flat-square" alt="License"></a>
 </p>
 
+> [!NOTE]
+> lexicon is **not** an agent harness. It has no tools, file access or command execution:
+> it is a simple chat for quick questions and lookups from your terminal.
+
 ## Features
 
 - Chat TUI built on [Bubble Tea](https://github.com/charmbracelet/bubbletea)

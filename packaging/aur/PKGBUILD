@@ -1,7 +1,7 @@
 pkgname=lexicon
 pkgver=0.1.0
 pkgrel=1
-pkgdesc='Keyboard-driven AI chat client for the terminal'
+pkgdesc='Simple terminal AI chat for quick lookups (not an agent harness)'
 arch=('x86_64' 'aarch64')
 url='https://github.com/kristyancarvalho/lexicon'
 license=('MIT')
